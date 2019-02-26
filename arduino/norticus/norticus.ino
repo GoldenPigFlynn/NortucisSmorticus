@@ -1,3 +1,7 @@
+// import external libraries
+#include <Adafruit_ssd1306syp.h>
+
+//constants
 #define ULTRASONIC_TRIGGER A3
 #define ULTRASONIC_ECHO A2 
 int In1 = 7;
@@ -8,7 +12,11 @@ int ENA = 5;
 int ENB = 6;
 int SPEED = 210;
 int LED = 12;
+#define SDA_PIN A4
+#define SCL_PIN A5
 
+//global variables
+Adafruit_ssd1306syp display(SDA_PIN,SCL_PIN);
 boolean disableCollisionDetection = false; // HACK
 boolean dead = false;
 unsigned long startMotors = 0;
@@ -53,10 +61,22 @@ int ultrasonic_distance_test() {
   //return ultrasonic_distance_test_internal();
 }
 
+void displayCool(String line1, String line2) {
+  display.clear();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(0,0);
+  display.println(line1);
+  display.setCursor(0,20);
+  display.println(line2);
+  display.update();
+}
+
 void setup() {  
 // Init the serial line; important for debug messages back to the Arduino Serial Monitor.
   // Make sure you set the baudrate at 9600 in Serial Monitor as well.
   Serial.begin(9600);
+
   
   pinMode(In1, OUTPUT);
   pinMode(In2, OUTPUT);
@@ -72,9 +92,15 @@ void setup() {
   startMotors = 0;
 
   digitalWrite(LED, LOW);
+
+  delay(1000);
+ display.initialize();
 }
 
 void loop() {
+
+  displayCool("hi there", "yoyoyo");
+
 
  // hack to make loop run only once
   if (dead) { 
